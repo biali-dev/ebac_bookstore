@@ -10,5 +10,5 @@ class ProductViewSet(ModelViewSet):
     serializer_class = ProductSerializers
     
     def get_queryset(self):
-        return Product.get_queryset()
+        return Product.objects.all()
     
