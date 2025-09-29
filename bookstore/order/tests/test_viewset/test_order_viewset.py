@@ -21,12 +21,20 @@ class TestOrderViewSet(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        order_data = json.loads(response.content)
 
-        order_data = json.loads(response.content)[0]
-        self.assertEqual(order_data['product'][0]['title'], self.product.title)
-        self.assertEqual(order_data['product'][0]['price'], self.product.price)
-        self.assertEqual(order_data['product'][0]['active'], self.product.active)
-        self.assertEqual(order_data['product'][0]['category'][0]['title'], self.category.title)
+        if isinstance(order_data, dict) and "results" in order_data:
+            orders = order_data["results"]
+        else:
+            orders = order_data
+
+        self.assertGreater(len(orders), 0)
+
+        order = orders[0]
+        self.assertEqual(order['product'][0]['title'], self.product.title)
+        self.assertEqual(float(order['product'][0]['price']), float(self.product.price))
+        self.assertEqual(order['product'][0]['active'], self.product.active)
+        self.assertEqual(order['product'][0]['category'][0]['title'], self.category.title)
 
     def test_create_order(self):
         user = UserFactory()
