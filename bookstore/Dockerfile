@@ -1,34 +1,42 @@
-# Base Python compatível com pytest >=8.4.2
-FROM python:3.11-slim AS base
+# Base Python
+FROM python:3.11-slim
 
+# Evita criação de arquivos .pyc e habilita buffer de saída
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VERSION=1.8.3 \
     POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_VIRTUALENVS_CREATE=false \
     POETRY_CACHE_DIR='/tmp/poetry_cache'
 
 WORKDIR /app
 
+# Instala dependências do sistema
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         curl \
         build-essential \
         libpq-dev \
+        gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Instala Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && ln -s /root/.local/bin/poetry /usr/local/bin/poetry
 
-# Copiar arquivos de dependências
+# Instala psycopg2
+RUN pip install psycopg2
+
+# Copia arquivos de dependências
 COPY pyproject.toml poetry.lock* ./
 
-# Instalar dependências sem pacotes dev
+# Instala dependências sem pacotes de dev
 RUN poetry install --no-root --only main
 
-# Copiar projeto inteiro
+# Copia o restante do código
 COPY . .
 
 EXPOSE 8000
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Comando padrão
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
