@@ -11,6 +11,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      DJANGO_ALLOWED_HOSTS: "localhost 127.0.0.1"
+      DEBUG: "1"
+      SECRET_KEY: "foo"
+      SQL_ENGINE: "django.db.backends.sqlite3"
+      SQL_DATABASE: ":memory:"
+      SQL_USER: ""
+      SQL_PASSWORD: ""
+      SQL_HOST: ""
+      SQL_PORT: ""
+
     steps:
     - uses: actions/checkout@v2
 
