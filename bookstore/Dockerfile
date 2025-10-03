@@ -31,7 +31,9 @@ RUN pip install psycopg2
 COPY pyproject.toml poetry.lock* ./
 
 # Instala dependências sem pacotes de dev
-RUN poetry install --no-root --only main
+# RUN poetry install --no-root --only main - comando antigo
+RUN poetry install --no-root --with dev
+
 
 # Copia o restante do código
 COPY . .
