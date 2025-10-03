@@ -31,7 +31,7 @@ jobs:
 
     - name: Install dependencies
       shell: bash
-      run: poetry install
+      run: poetry install --no-root
       working-directory: ./bookstore
 
     - name: Test
