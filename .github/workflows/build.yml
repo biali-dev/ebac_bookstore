@@ -27,11 +27,13 @@ jobs:
 
     - name: View poetry --help
       run: poetry --help
+      working-directory: ./bookstore
 
     - name: Install dependencies
       shell: bash
-      run: python -m poetry install
+      run: poetry install
+      working-directory: ./bookstore
 
     - name: Test
-      run: |
-        poetry run python manage.py test
+      run: poetry run python manage.py test
+      working-directory: ./bookstore
