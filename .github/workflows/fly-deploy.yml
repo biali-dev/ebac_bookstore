@@ -9,18 +9,25 @@ jobs:
   deploy:
     name: Deploy app to Fly.io
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: 7_django_framework/bookstore  # subdiretório do projeto Django
 
     steps:
+      # 1️⃣ Faz checkout do repo inteiro
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Lista arquivos para debug (opcional, remove depois)
+      - name: List repository files
+        run: ls -R
+
+      # 3️⃣ Instala Flyctl
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      # 4️⃣ Deploy para Fly usando Dockerfile no subdiretório
       - name: Deploy app
-        run: flyctl deploy --remote-only --app bookstore-still-feather-4847 --dockerfile Dockerfile
+        run: flyctl deploy --remote-only \
+                           --app bookstore-still-feather-4847 \
+                           --dockerfile 7_django_framework/bookstore/Dockerfile \
+                           --build-arg CONTEXT=7_django_framework/bookstore
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
