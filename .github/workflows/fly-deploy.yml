@@ -11,20 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Faz checkout do repo inteiro
+      # 1️⃣ Faz checkout de todo o repositório
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # garante que todo o histórico e subpastas sejam baixados
 
-      # 2️⃣ Lista arquivos para debug (opcional, remove depois)
-      - name: List repository files
-        run: ls -R
-
-      # 3️⃣ Instala Flyctl
+      # 2️⃣ Configura o Flyctl
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # 4️⃣ Deploy para Fly usando Dockerfile no subdiretório
+      # 3️⃣ Deploy usando o subdiretório
       - name: Deploy app
-        run: flyctl deploy 7_django_framework/bookstore --remote-only --app bookstore-still-feather-4847 --dockerfile Dockerfile
+        run: flyctl deploy ./7_django_framework/bookstore --remote-only --app bookstore-still-feather-4847 --dockerfile Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
