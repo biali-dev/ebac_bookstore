@@ -9,6 +9,13 @@ jobs:
   deploy:
     name: Deploy app to Fly.io
     runs-on: ubuntu-latest
+<<<<<<< HEAD
+=======
+    defaults:
+      run:
+        working-directory: ebac_bookstore/bookstore  # <-- subdiretório do projeto
+
+>>>>>>> 94eb6fd2039fdadd0b769f037aff2dc07de085ab
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,9 +24,13 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy app
+<<<<<<< HEAD
         run: |
           flyctl deploy --remote-only \
                         --app bookstore-still-feather-4847 \
                         --dockerfile 7_django_framework/bookstore/Dockerfile
+=======
+        run: flyctl deploy --remote-only -a bookstore-still-feather-4847 --dockerfile Dockerfile
+>>>>>>> 94eb6fd2039fdadd0b769f037aff2dc07de085ab
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

@@ -35,4 +35,8 @@ console_command = "python manage.py shell"
 [[statics]]
   # Caminho interno para os static files coletados pelo Django
   guest_path = "/code/static"
+<<<<<<< HEAD
   url_prefix = "/static/"
+=======
+  url_prefix = "/static/"
+>>>>>>> 94eb6fd2039fdadd0b769f037aff2dc07de085ab
