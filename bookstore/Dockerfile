@@ -1,38 +1,43 @@
-# fly.toml - Configuração para Django no Fly.io
-app = "bookstore-still-feather-4847"
-primary_region = "gru"
+# Dockerfile para Fly.io - Django
+ARG PYTHON_VERSION=3.13-slim
 
-# Comando para abrir o shell do Django se necessário
-console_command = "python manage.py shell"
+FROM python:${PYTHON_VERSION}
 
-[build]
-  # Usa Dockerfile na raiz
-  dockerfile = "Dockerfile"
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-[deploy]
-  # Executa migrações automaticamente após deploy
-  release_command = "python manage.py migrate --noinput"
+# Instala dependências do psycopg2
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
-[env]
-  # Fly recomenda 8080 como porta interna
-  PORT = "8080"
-  DJANGO_ALLOWED_HOSTS = "bookstore-still-feather-4847.fly.dev"
+# Define diretório do projeto
+WORKDIR /code
 
+# Instala poetry
+RUN pip install poetry
 
-[http_service]
-  internal_port = 8080
-  force_https = true
-  auto_stop_machines = "stop"
-  auto_start_machines = true
-  min_machines_running = 1
-  processes = ["app"]
+# Copia apenas arquivos de dependências primeiro
+COPY pyproject.toml poetry.lock /code/
 
-[[vm]]
-  memory = "1gb"
-  cpu_kind = "shared"
-  cpus = 1
+# Configura poetry para não criar virtualenv
+RUN poetry config virtualenvs.create false
 
-[[statics]]
-  # Caminho interno para os static files coletados pelo Django
-  guest_path = "/code/static"
-  url_prefix = "/static/"
+# Instala dependências do projeto
+RUN poetry install --only main --no-root --no-interaction
+
+# Copia todo o projeto Django
+COPY . /code/
+
+# Define SECRET_KEY de ambiente para produção
+ENV SECRET_KEY "R0oHkQlrWpr8ihYsI5gIqz5n5pAwVE25JxqaEk2MRkGEfXjP0D"
+
+# Coleta arquivos estáticos
+RUN python manage.py collectstatic --noinput
+
+# Expõe porta
+EXPOSE 8080
+
+# Comando padrão para iniciar o Gunicorn
+CMD ["gunicorn","--bind",":8080","--workers","2","bookstore.wsgi"]
