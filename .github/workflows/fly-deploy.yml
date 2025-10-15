@@ -15,14 +15,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # garante que todo o histórico e subpastas sejam baixados
+          fetch-depth: 0  # garante histórico completo e pastas/submódulos
 
-      # 2️⃣ Configura o Flyctl
+      # 2️⃣ Lista arquivos para debug do caminho
+      - name: List repository files
+        run: ls -R
+
+      # 3️⃣ Configura Flyctl
       - name: Set up Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      # 3️⃣ Deploy usando o subdiretório
+      # 4️⃣ Deploy para Fly.io
       - name: Deploy app
-        run: flyctl deploy ./7_django_framework/bookstore --remote-only --app bookstore-still-feather-4847 --dockerfile Dockerfile
+        run: |
+          flyctl deploy ./7_django_framework/bookstore \
+                        --remote-only \
+                        --app bookstore-still-feather-4847 \
+                        --dockerfile Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
