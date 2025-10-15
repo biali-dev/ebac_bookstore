@@ -7,7 +7,7 @@ console_command = "python manage.py shell"
 
 [build]
   # Usa Dockerfile na raiz
-  dockerfile = "7_django_framework/bookstore/Dockerfile"
+  # dockerfile = "7_django_framework/bookstore/Dockerfile"
 
 [deploy]
   # Executa migrações automaticamente após deploy
