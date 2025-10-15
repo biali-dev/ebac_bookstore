@@ -1,44 +1,29 @@
-# Base Python
-FROM python:3.11-slim
+ARG PYTHON_VERSION=3.13-slim
 
-# Evita criação de arquivos .pyc e habilita buffer de saída
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    POETRY_VERSION=1.8.3 \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_CACHE_DIR='/tmp/poetry_cache'
+FROM python:${PYTHON_VERSION}
 
-WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Instala dependências do sistema
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        curl \
-        build-essential \
-        libpq-dev \
-        gcc \
+# install psycopg2 dependencies.
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - \
-    && ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+RUN mkdir -p /code
 
-# Instala psycopg2
-RUN pip install psycopg2
+WORKDIR /code
 
-# Copia arquivos de dependências
-COPY pyproject.toml poetry.lock* ./
+RUN pip install poetry
+COPY pyproject.toml poetry.lock /code/
+RUN poetry config virtualenvs.create false
+RUN poetry install --only main --no-root --no-interaction
+COPY . /code
 
-# Instala dependências sem pacotes de dev
-# RUN poetry install --no-root --only main - comando antigo
-RUN poetry install --no-root --with dev
-
-
-# Copia o restante do código
-COPY . .
+ENV SECRET_KEY "R0oHkQlrWpr8ihYsI5gIqz5n5pAwVE25JxqaEk2MRkGEfXjP0D"
+RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-# Comando padrão
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn","--bind",":8000","--workers","2","bookstore.wsgi"]
