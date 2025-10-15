@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: 7_django_framework/bookstore  # <-- subdiretório do projeto
+        working-directory: ebac_bookstore/bookstore  # <-- subdiretório do projeto
 
     steps:
       - name: Checkout repository
