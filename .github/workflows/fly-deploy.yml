@@ -17,6 +17,6 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy app
-        run: flyctl deploy --remote-only -a bookstore-still-feather-4847
+        run: flyctl deploy --remote-only -a bookstore-still-feather-4847 --dockerfile 7_django_framework/bookstore/Dockerfile
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
