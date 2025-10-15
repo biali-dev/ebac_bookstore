@@ -1,33 +1,36 @@
-# fly.toml app configuration file generated for bookstore-still-feather-4847 on 2025-10-14T22:17:18-03:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+# fly.toml - Configuração para Django no Fly.io
+app = "bookstore-still-feather-4847"
+primary_region = "gru"
 
-app = 'bookstore-still-feather-4847'
-primary_region = 'gru'
-console_command = '/code/manage.py shell'
+# Comando para abrir o shell do Django se necessário
+console_command = "python manage.py shell"
 
 [build]
+  # Usa Dockerfile na raiz
+  dockerfile = "Dockerfile"
 
 [deploy]
-  release_command = 'python manage.py migrate --noinput'
+  # Executa migrações automaticamente após deploy
+  release_command = "python manage.py migrate --noinput"
 
 [env]
-  PORT = '8000'
+  # Fly recomenda 8080 como porta interna
+  PORT = "8080"
 
 [http_service]
-  internal_port = 8000
+  internal_port = 8080
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = "stop"
   auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
+  min_machines_running = 1
+  processes = ["app"]
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  memory = "1gb"
+  cpu_kind = "shared"
   cpus = 1
 
 [[statics]]
-  guest_path = '/code/static'
-  url_prefix = '/static/'
+  # Caminho interno para os static files coletados pelo Django
+  guest_path = "/code/static"
+  url_prefix = "/static/"
