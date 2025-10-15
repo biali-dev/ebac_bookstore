@@ -16,7 +16,8 @@ console_command = "python manage.py shell"
 [env]
   # Fly recomenda 8080 como porta interna
   PORT = "8080"
-  DJANGO_ALLOWED_HOSTS = "bookstore-still-feather-4847.fly.dev"
+  DJANGO_ALLOWED_HOSTS = "bookstore-still-feather-4847.fly.dev localhost 127.0.0.1"
+
 
 [http_service]
   internal_port = 8080
