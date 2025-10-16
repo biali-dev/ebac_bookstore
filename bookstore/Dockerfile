@@ -16,16 +16,16 @@ WORKDIR /code
 RUN pip install poetry
 
 # Copia arquivos de dependências
-COPY 7_django_framework/bookstore/pyproject.toml 7_django_framework/bookstore/poetry.lock /code/
+COPY pyproject.toml poetry.lock /code/
 
 RUN poetry config virtualenvs.create false
 RUN poetry install --only main --no-root --no-interaction
 
 # Copia todo o projeto Django
-COPY 7_django_framework/bookstore/ /code/
+COPY . /code/
 
 # Coleta os static files
-RUN python /code/manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput
 
 # Define SECRET_KEY de ambiente para produção
 ENV SECRET_KEY "R0oHkQlrWpr8ihYsI5gIqz5n5pAwVE25JxqaEk2MRkGEfXjP0D"
