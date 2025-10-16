@@ -19,8 +19,5 @@ RUN poetry install --only main --no-root --no-interaction
 
 COPY . /code/
 
-# Remova o collectstatic do build
-# Será executado no entrypoint ou CMD
-
-CMD python manage.py collectstatic --noinput && \
-    gunicorn --bind :8000 --workers 2 bookstore.wsgi
+# Ajuste o CMD para usar a porta do Fly
+CMD sh -c "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:$PORT --workers 2 bookstore.wsgi"
