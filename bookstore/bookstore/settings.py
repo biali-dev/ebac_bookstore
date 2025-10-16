@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-_^_y&os!&zm0@$(6pkl(hc^4e89vx!51^#5pen#0_&wv68@+z0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost').split(' ')
+ALLOWED_HOSTS = ['bookstore-still-feather-4847.fly.dev', 'localhost', '127.0.0.1']
 
 # Application definition
 
