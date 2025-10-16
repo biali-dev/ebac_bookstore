@@ -1,21 +1,14 @@
 app = "bookstore-still-feather-4847"
 primary_region = "gru"
 
-# Comando para abrir o shell do Django se necessário
-console_command = "python manage.py shell"
-
 [build]
-  # Usa o Dockerfile no mesmo diretório do projeto
   dockerfile = "Dockerfile"
 
 [deploy]
-  # Executa migrações automaticamente após deploy
   release_command = "python manage.py migrate --noinput"
 
 [env]
   PORT = "8080"
-  DJANGO_ALLOWED_HOSTS = "bookstore-still-feather-4847.fly.dev"
-  SECRET_KEY = "R0oHkQlrWpr8ihYsI5gIqz5n5pAwVE25JxqaEk2MRkGEfXjP0D"
   DEBUG = "0"
 
 [http_service]
