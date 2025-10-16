@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Faz checkout de todo o repositório
+      # 1️⃣ Faz checkout do repositório
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # garante histórico completo e pastas/submódulos
-          submodules: recursive # se você tiver submódulos
+          fetch-depth: 0
+          submodules: recursive
 
-      # 2️⃣ Lista arquivos para debug do caminho
+      # 2️⃣ Lista arquivos para debug (opcional)
       - name: List files for debug
         run: ls -R
 
@@ -29,6 +29,6 @@ jobs:
       # 4️⃣ Deploy para Fly.io
       - name: Deploy app
         run: |
-          flyctl deploy ./7_django_framework/bookstore --remote-only --app bookstore-still-feather-4847 --dockerfile Dockerfile
+          flyctl deploy -c ./7_django_framework/bookstore/fly.toml --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

@@ -16,6 +16,7 @@ console_command = "python manage.py shell"
   PORT = "8080"
   DJANGO_ALLOWED_HOSTS = "bookstore-still-feather-4847.fly.dev"
   SECRET_KEY = "R0oHkQlrWpr8ihYsI5gIqz5n5pAwVE25JxqaEk2MRkGEfXjP0D"
+  DEBUG = "0"
 
 [http_service]
   internal_port = 8080
