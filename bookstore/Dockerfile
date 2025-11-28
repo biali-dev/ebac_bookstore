@@ -1,42 +1,20 @@
-# Base Python
-FROM python:3.11-slim
+FROM python:3.13-slim
 
-# Evita criação de arquivos .pyc e habilita buffer de saída
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    POETRY_VERSION=1.8.3 \
-    POETRY_NO_INTERACTION=1 \
-    POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_CACHE_DIR='/tmp/poetry_cache'
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
-
-# Instala dependências do sistema
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        curl \
-        build-essential \
-        libpq-dev \
-        gcc \
+RUN apt-get update && apt-get install -y \
+    libpq-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala Poetry
-RUN curl -sSL https://install.python-poetry.org | python3 - \
-    && ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+WORKDIR /code
 
-# Instala psycopg2
-RUN pip install psycopg2
+COPY pyproject.toml poetry.lock /code/
 
-# Copia arquivos de dependências
-COPY pyproject.toml poetry.lock* ./
+RUN pip install --no-cache-dir poetry
+RUN poetry config virtualenvs.create false
+RUN poetry install --only main --no-root --no-interaction
 
-# Instala dependências sem pacotes de dev
-RUN poetry install --no-root --only main
+COPY . /code/
 
-# Copia o restante do código
-COPY . .
-
-EXPOSE 8000
-
-# Comando padrão
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD sh -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn bookstore.wsgi --bind 0.0.0.0:${PORT:-8000}"
