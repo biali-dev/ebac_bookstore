@@ -151,8 +151,6 @@ SECRET_KEY = os.getenv("SECRET_KEY", "insecure-test-key")
 
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
-
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
